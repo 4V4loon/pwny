@@ -4,6 +4,4 @@
     <b>Pwny</b><br>
 </p>
 
-*No messy code and dynamic libraries, I promise*
-
-♞ iPhoneOS and iPadOS backdoor payload designed for portability, embeddability, and low resource utilization ♞
+HatSploit iPhoneOS and iPadOS backdoor payload designed for portability, embeddability, and low resource utilization.
