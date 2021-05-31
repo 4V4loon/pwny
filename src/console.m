@@ -27,7 +27,7 @@
 @implementation Console
 
 -(void)console_log:(NSString *)message {
-    printf("%s", [message cStringUsingEncoding:NSUTF8StringEncoding]);
+    printf("%s", [message UTF8String]);
     fflush(stdout);
 }
 
