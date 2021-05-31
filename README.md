@@ -4,4 +4,4 @@
     <b>Pwny</b><br>
 </p>
 
-HatSploit iPhoneOS and iPadOS backdoor payload designed for portability, embeddability, and low resource utilization.
+HatSploit native iPhoneOS and iPadOS payload designed for portability, embeddability, and low resource utilization.
