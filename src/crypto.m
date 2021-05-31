@@ -27,7 +27,14 @@
 @implementation Crypto
 
 -(NSString *)crypto:(NSString *)string {
-    char *string = [string UTF8String];
+    NSString *result = @"";
+    char *cstring = [string UTF8String];
+
+    for (int i = 0; i < [string length]; i++)
+        result = [NSString stringWithFormat:@"%@%@",
+                  result, char(int(c) ^ [string length]];
+
+    return result;
 }
 
 @end
