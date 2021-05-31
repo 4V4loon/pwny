@@ -125,7 +125,7 @@ void interact() {
         } else if ([args[0] isEqualToString:@"exit"])
             break;
         else
-            [console console_log:@"Unrecognized command!\n"];
+            [console console_log_error:@"Unrecognized command!\n"];
     }
 }
 
