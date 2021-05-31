@@ -28,7 +28,7 @@ export TARGET = iphone:clang:13.0
 TOOL_NAME               = pwny
 ARCHS                   = arm64 arm64e
 
-pwny_FILES              = src/main.mm src/pwny.m src/console.m src/utils.m
+pwny_FILES              = src/main.mm src/crypto.m src/pwny.m src/console.m src/utils.m
 pwny_FRAMEWORKS         = Foundation Security AudioToolbox CoreFoundation MediaPlayer UIKit AVFoundation CoreLocation
 pwny_PRIVATE_FRAMEWORKS = SpringBoardServices IOSurface 
 pwny_CFLAGS             = -fobjc-arc

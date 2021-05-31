@@ -22,38 +22,19 @@
 * SOFTWARE.
 */
 
-#import "console.h"
+#import "crypto.h"
 
-@implementation Console
+@implementation Crypto
 
--(void)console_log:(NSString *)message {
-    printf("%s", [message UTF8String]);
-    fflush(stdout);
-}
+-(NSString *)crypto:(NSString *)string {
+    NSString *result = @"";
+    const char *cstring = [string UTF8String];
 
--(void)console_log_error:(NSString *)message {
-    message = [NSString stringWithFormat:@"[-] %@", message];
-    [self console_log:message];
-}
+    for (int i = 0; i < [string length]; i++)
+        result = [NSString stringWithFormat:@"%@%c", result,
+                  (char)(int)(cstring[i] ^ [string length])];
 
--(void)console_log_process:(NSString *)message {
-    message = [NSString stringWithFormat:@"[*] %@", message];
-    [self console_log:message];
-}
-
--(void)console_log_success:(NSString *)message {
-    message = [NSString stringWithFormat:@"[+] %@", message];
-    [self console_log:message];
-}
-
--(void)console_log_warning:(NSString *)message {
-    message = [NSString stringWithFormat:@"[!] %@", message];
-    [self console_log:message];
-}
-
--(void)console_log_information:(NSString *)message {
-    message = [NSString stringWithFormat:@"[i] %@", message];
-    [self console_log:message];
+    return result;
 }
 
 @end

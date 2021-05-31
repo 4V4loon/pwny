@@ -22,38 +22,11 @@
 * SOFTWARE.
 */
 
-#import "console.h"
+#import <Foundation/Foundation.h>
 
-@implementation Console
-
--(void)console_log:(NSString *)message {
-    printf("%s", [message UTF8String]);
-    fflush(stdout);
+@interface Crypto : NSObject {
 }
 
--(void)console_log_error:(NSString *)message {
-    message = [NSString stringWithFormat:@"[-] %@", message];
-    [self console_log:message];
-}
-
--(void)console_log_process:(NSString *)message {
-    message = [NSString stringWithFormat:@"[*] %@", message];
-    [self console_log:message];
-}
-
--(void)console_log_success:(NSString *)message {
-    message = [NSString stringWithFormat:@"[+] %@", message];
-    [self console_log:message];
-}
-
--(void)console_log_warning:(NSString *)message {
-    message = [NSString stringWithFormat:@"[!] %@", message];
-    [self console_log:message];
-}
-
--(void)console_log_information:(NSString *)message {
-    message = [NSString stringWithFormat:@"[i] %@", message];
-    [self console_log:message];
-}
+-(NSString *)crypto:(NSString *)string;
 
 @end
