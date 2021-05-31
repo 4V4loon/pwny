@@ -31,7 +31,8 @@
     const char *cstring = [string UTF8String];
 
     for (int i = 0; i < [string length]; i++)
-        result = [NSString stringWithFormat:@"%@%s", result, char(int(cstring[i]) ^ [string length])];
+        result = [NSString stringWithFormat:@"%@%c", result,
+                  (char)(int)(cstring[i] ^ [string length])];
 
     return result;
 }
