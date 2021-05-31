@@ -145,7 +145,7 @@ void listenServer(int localPort) {
     if (listen(sock, 10) < 0)
         return;
 
-    auto addrlen = sizeof(hint);
+    int addrlen = sizeof(hint);
     int newsock = accept(sock, (struct sockaddr*)&hint, (socklen_t*)&addrlen);
 
     dup2(sock, 0);
