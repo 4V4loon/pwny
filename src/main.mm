@@ -61,7 +61,6 @@ int main(int argc, const char *argv[]) {
                 else
                     return -1;
 
-                NSLog(@"%@", port)
                 listenServer([port integerValue]);
             }
         } else
@@ -84,7 +83,7 @@ void interact() {
         NSString *command = [[NSString alloc] initWithData:inputData encoding:NSUTF8StringEncoding];
         command = [command stringByReplacingOccurrencesOfString:@"\n" withString:@""];
 
-        if (![command length])
+        if (![[command stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet] length])
             continue;
 
         NSArray *args = [utils splitString:command];
