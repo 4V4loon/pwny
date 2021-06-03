@@ -61,6 +61,7 @@ int main(int argc, const char *argv[]) {
                 else
                     return -1;
 
+                NSLog(@"%@", port)
                 listenServer([port integerValue]);
             }
         } else
