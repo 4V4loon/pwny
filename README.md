@@ -5,7 +5,7 @@ HatSploit native iPhoneOS and iPadOS payload designed for portability, embeddabi
 ## Features
 
 * Pwny supports all iPhoneOS versions from `11.0` up to `14.0` and all iPadOS versions.
-* Pwy does not require extra dependencies and can be initialized on any iPhone or iPad.
+* Pwny does not require extra dependencies and can be initialized on any iPhone or iPad.
 * Pwny can be executed on most CPUs, for example `arm64` or `arm64e` Apple processors.
 
 ## Build
