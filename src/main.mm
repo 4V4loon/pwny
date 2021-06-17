@@ -75,7 +75,7 @@ void interact() {
     Utils *utils = [[Utils alloc] init];
 
     while (YES) {
-        [console console_log:@"pwny% "];
+        [console console_log:@"pwny > "];
 
         NSFileHandle *kbd = [NSFileHandle fileHandleWithStandardInput];
         NSData *inputData = [kbd availableData];
